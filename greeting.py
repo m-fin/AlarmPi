@@ -1,23 +1,39 @@
 import time
-import datetime
+from datetime import datetime
 import os
 import pygame
-pygame.init()
+from speak import espeak
+from weather import Weather
+from config import Config
+
+config = Config()
 
 def goodMorning():
-    my_sound = pygame.mixer.Sound('gong.wav')
-    my_sound.play()
-    os.system("espeak '" + speakHello() + "'")
-    os.system("espeak '" + speakCurrentTime() + "'")
+    os.system("clear")
+    speakHello()
+    speakCurrentTime()
+    speakWeather()
+    turnOff()
 
 def speakHello():
-    strGreeting = "Good morning, Matthew."
-    return strGreeting
+    pygame.init()
+    gong = pygame.mixer.Sound('sounds/gong.wav')
+
+    gong.play()
+
+    strGreeting = "Good morning, " + config.getName()
+    espeak(strGreeting)
+
+    morningMix()
+
+# selects background music that is played
+def morningMix():
+    morningMood = pygame.mixer.Sound('sounds/morningMood.wav')
+    morningMood.play()
 
 def speakCurrentTime():
-    currentTime = datetime.datetime.now()
-    currentHour = currentTime.hour
-    currentMinute = currentTime.minute
+    currentHour = datetime.now().hour
+    currentMinute = datetime.now().minute
 
     if currentMinute == 0:
         strCurrentTime = "The current time is " + str(currentHour) + " o clock"
@@ -26,4 +42,15 @@ def speakCurrentTime():
     else:
         strCurrentTime = "The current time is " + str(currentHour) + " " + str(currentMinute)
 
-    return strCurrentTime
+    espeak(strCurrentTime)
+
+def speakWeather():
+    weather = Weather(27519)
+    strTemperature = "The current temperature is " + weather.getTemperature()
+    strWeatherDescription = "The weather is currently " + weather.getWeatherDescription()
+
+    espeak(strTemperature)
+    espeak(strWeatherDescription)
+
+def turnOff():
+    input("Press 'Enter' to turn off alarm")

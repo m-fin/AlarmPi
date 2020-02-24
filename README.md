@@ -1,2 +1,2 @@
 # AlarmPi
-Alarm clock made in python for the raspberry pi.
+Alarm clock made in python for my Raspberry Pi.
